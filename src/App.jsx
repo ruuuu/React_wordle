@@ -98,7 +98,7 @@ function App() { // точка входа
       return 'present';
     }
     
-    return 'not found';  // Если буквы нет в слове
+    return 'absent';  // Если буквы нет в слове
   }
   
 
@@ -120,18 +120,45 @@ function App() { // точка входа
         <h1>Крутая игра !</h1>
       </header>
 
-     <div className='game-board'>
+      <div className='game-board'>
+      {/* Отображаем текущие попытки:  */}
       {
-        guesses.map((guess, guessIndex) => {  // [ <div></div>, <div></div>, ]
+        guesses.map((guess, guessIndex) => (  // вернет [ <div></div>, <div></div>, ]
           <div key={guessIndex} className='word-row'>
-            { Array.from({ length:5 }).map((_, letterIndex) => {
-              <div key={letterIndex} className=''></div>
-              })
+            { Array.from({ length:5 }).map((_, letterIndex) => (  // вернет [ <div></div>, <div></div>, ] 
+                <div key={letterIndex} className={`letter-box ${getCellColor(guesses[letterIndex], letterIndex, guesses)}`}> {guesses[letterIndex] || ''} </div>
+              ))
             }
           </div>
-        })
+        ))
       }
-     </div>
+
+
+      {/* строка ввода: */}
+      { !gameOver && guesses.length < MAX_ATTEMPTS &&  ( // если условие выполнется то отобразим блок <вшм>
+        <div className='word-row current'>  
+          { Array.from({ length: 5 }).map((_, letterIndex) => (         // вернет [ <div></div>, <div></div>, ]
+              <div key={letterIndex} className='letter-box'> {guesses[letterIndex] || ''} </div>
+            ))
+          } 
+        </div>
+       )
+      }
+
+
+      {/* заполняем оставшиеся пустые строки: */}
+      { !gameOver && Array.from({ length: MAX_ATTEMPTS - guesses.length -1 }).map((_, rowIndex) => ( // если !gameOver true, то отобразит 
+          <div key={rowIndex} className='word-row'> 
+            { Array.from({ length: 5}).map((_, letterIndex)=>(
+                <div key={letterIndex} className='letter-box'></div>
+            ))}
+          </div>
+        ))
+      }
+      </div>
+
+      {/* добавляем блок сообщения для пользователя: если message =true то отобразит блок */}
+      { message && <div className='message'> {message} </div> } 
     </div>
   )
 }
