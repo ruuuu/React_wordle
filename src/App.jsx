@@ -11,7 +11,7 @@ const MAX_ATTEMPTS = 6; // Максимальное количество поп�
 function App() { // точка входа
 
   const [secretWord, setSecretWord] = useState(''); // Загаданное слово
-  const [guesses, setGuesses] = useState([]);       // Массив попыток
+  const [guesses, setGuesses] = useState([]);       // Массив попыток ['a', 'р', 'в']
   const [currentGuess, setCurrentGuess] = useState('');  // Текущий ввод(буквы) пользователя
   const [gameOver, setGameOver] = useState(false);      // Флаг окончания игры
   const [message, setMessage] = useState('');           // Сообщение для пользователя
@@ -34,7 +34,7 @@ function App() { // точка входа
       //Если нажата буква русского алфавита
       if (/^[а-яА-ЯёË]$/.test(evt.key)) {
         if (currentGuess.length < 5) {
-          setCurrentGuess(prev => prev + evt.key.toUpperCase());
+          setCurrentGuess(prev => prev + evt.key.toUpperCase()); // prev - предыдущее значение currentGuess
         }
       } 
       else{
@@ -57,18 +57,20 @@ function App() { // точка входа
 
     window.addEventListener('keyDown', handleKeyDown);
 
-    return () => window.removeEventListener('keyDown', handleKeyDown); // при отключении комопнента отлючаем обработчик
+    return () => window.removeEventListener('keyDown', handleKeyDown); // при отключении комопнента удалим обработчик
 
   }, [ currentGuess, gameOver ]); // при смене currentGuess, gameOver будет вызываться коллбэк
 
   
+
+
   const checkGuess = () => {
     //console.log('guesses', guesses);
     const newGuess = [...guesses, currentGuess];  // Добавляем текущее слово currentGuess в массив попыток
 
     //console.log('newGuess ', newGuess);
     setGuesses(newGuess);
-    setCurrentGuess(''); // очищаем текущее введенное слово
+    setCurrentGuess(''); // очищаем текущее введенную букву
 
     
     if (currentGuess === secretWord) { // если слово угадано
@@ -92,20 +94,45 @@ function App() { // точка входа
       return 'correct';
     }
     
-    if (secretWord.includes(letter)) {  // Если буква есть в слове, но не на своем месте
+    if (secretWord.includes(letter)) {  // Если буква letter есть в слове, но не на своем месте
       return 'present';
     }
     
     return 'not found';  // Если буквы нет в слове
   }
   
+
+  // Функция для начала новой игры
+  const startNewGame = () => {
+    const randomIndex = Math.floor(Math.random() * WORDS.length);
+    setSecretWord(WORDS[randomIndex]); 
+    setGuesses([]);
+    setCurrentGuess('');
+    setGameOver('');
+    setMessage('');
+  }
  
 
 
   return (
-    <>
-     <h1>Heabyf</h1>
-    </>
+    <div className='app'>
+      <header> 
+        <h1>Крутая игра !</h1>
+      </header>
+
+     <div className='game-board'>
+      {
+        guesses.map((guess, guessIndex) => {  // [ <div></div>, <div></div>, ]
+          <div key={guessIndex} className='word-row'>
+            { Array.from({ length:5 }).map((_, letterIndex) => {
+              <div key={letterIndex} className=''></div>
+              })
+            }
+          </div>
+        })
+      }
+     </div>
+    </div>
   )
 }
 
