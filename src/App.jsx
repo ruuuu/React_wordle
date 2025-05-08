@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 
 // Список слов для игры wordle
 const WORDS = ['РУЧКА', 'ЛАМПА', 'КНИГА', 'РАДИО', 'ОКНО', 'КОШКА', 'МЫШКА', 'ДИВАН', 'ТОПОР', 'ЗЕМЛЯ'];
-const MAX_ATTEMPTS = 6; // Максимальное количество попыток
+const MAX_ATTEMPTS = 6; // Максимальное количество попыток ввода букв слова
 
 
 function App() { // точка входа
@@ -43,7 +43,7 @@ function App() { // точка входа
         } 
         else if (evt.key === 'Enter') {     //  Если нажата клавиша Enter
           if (currentGuess.length === 5) {
-            checkGuess();
+            checkGuess();       // проверяем слово
           } 
           else{
             setMessage('Слово должно быть из 5 букв!')
@@ -61,8 +61,44 @@ function App() { // точка входа
 
   }, [ currentGuess, gameOver ]); // при смене currentGuess, gameOver будет вызываться коллбэк
 
+  
+  const checkGuess = () => {
+    //console.log('guesses', guesses);
+    const newGuess = [...guesses, currentGuess];  // Добавляем текущее слово currentGuess в массив попыток
 
-  //
+    //console.log('newGuess ', newGuess);
+    setGuesses(newGuess);
+    setCurrentGuess(''); // очищаем текущее введенное слово
+
+    
+    if (currentGuess === secretWord) { // если слово угадано
+      setGameOver(true);
+      setMessage('Поздравляем, вы угадали слово!')
+      return; // выход из функции
+    }
+
+    if (newGuess.length >= MAX_ATTEMPTS) {
+      setGameOver(true);
+      setMessage(`Вы проиграли! Загаданное слово было ${secretWord}`)
+    }
+  };
+
+
+  // Функция определения цвета клетки
+  const getCellColor = (letter, index, word) => { // letter- вводимая буква
+    if (!letter) return '';
+
+    if (secretWord[index] === letter) {   // Если буква на своем месте
+      return 'correct';
+    }
+    
+    if (secretWord.includes(letter)) {  // Если буква есть в слове, но не на своем месте
+      return 'present';
+    }
+    
+    return 'not found';  // Если буквы нет в слове
+  }
+  
  
 
 
