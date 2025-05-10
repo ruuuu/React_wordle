@@ -108,10 +108,11 @@ function App() { // точка входа
   // Функция для начала новой игры
   const startNewGame = () => {
     const randomIndex = Math.floor(Math.random() * WORDS.length);
+    console.log('WORDS[randomIndex] ', WORDS[randomIndex])
     setSecretWord(WORDS[randomIndex]); 
     setGuesses([]);
     setCurrentGuess('');
-    setGameOver('');
+    setGameOver(false);
     setMessage('');
   };
  
@@ -126,10 +127,10 @@ function App() { // точка входа
       <div className='game-board'>
       {/* Отображаем предыдущие попытки:  */}
       { // guesses = ['ямены', 'цйуке', 'ирпен', 'сакен', 'пенку', 'ипнрг']
-        guesses.map((_, guessIndex) => (  // вернет [ <div></div>, <div></div>, ]
+        guesses.map((guess,  guessIndex) => (  // вернет [ <div></div>, <div></div>, ]
           <div key={guessIndex} className='word-row'>
-            { Array.from({ length:5 }).map((_, letterIndex) => (  // вернет [ <div></div>, <div></div>, ] 
-                <div key={letterIndex} className={`letter-box ${getCellColor(guesses[letterIndex], letterIndex)}`}> {guesses[letterIndex] || ''} </div>
+            { Array.from({ length:5 }).map((_, letterIndex) => (  // вернет [ <div>...</div>, <div>...</div>, ] 
+                <div key={letterIndex} className={`letter-box ${getCellColor(guess[letterIndex], letterIndex)}`}> {guess[letterIndex] || ''} </div>
               ))                                                            // letter, index
             }
           </div>
